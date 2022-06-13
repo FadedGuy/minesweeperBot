@@ -108,28 +108,57 @@ class Matrix:
                     print("Ø", end=' ')
             print()
 
+# Returns None if input coords are not valid, otherwise returns the coords as [x,y]
+def get_coords(w, h):
+    coord  = input("x,y: ")
+    coord = [a for a in coord.split(",")]
+
+    if len(coord) != 2:
+        print("Incorrent number of coordinates")
+        return None
+
+    for pos in coord:
+            try: 
+                int(pos)
+            except ValueError:
+                print(f"{pos} is not an int!")
+                return None
+    
+    coord[0],coord[1] = int(coord[0]), int(coord[1])
+
+    if coord[0] < 0 or coord[0] >= w or coord[1] < 0 or coord[1] >= h:
+        print("Invalid coordinates")
+        return None
+
+    return [int(coord[0]), int(coord[1])]
+
+def handle_coords(mat, coords, bombsRem):
+    pos = mat.mat[coords[0]][coords[1]]
+
+    if pos.value >= 0:
+        print("Valid")
+    # Double check w isBomb n -1?
+    elif pos.isBomb:
+        print("Boom")
+        bombsRem = 0
+    elif pos.value == -2:
+        print("Already checked")
+    elif pos.value == -3:
+        print("Flagged")
 
 def game(mat, nbBombs):
     bombsRem = nbBombs
+    mat.print_nude()
 
     while(bombsRem > 0):
-        coord  = input("x,y: ")
-        coord = [a for a in coord.split(",")]
-        
-        valid = True
-        for pos in coord:
-                try: 
-                    int(pos)
-                except ValueError:
-                    valid = False
-                    print(f"{pos} is not an int!")
-                    continue
+        mat.print()
 
-        if valid:
-            for i in range(len(coord)):
-                coord[i] = int(coord[i])
+        coord = None
+        while coord is None:
+            coord = get_coords(mat.height, mat.width)
 
-        print(coord)
+        handle_coords(mat, coord, bombsRem)
+
         bombsRem = bombsRem-1
     
     print("Game over")
