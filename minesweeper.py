@@ -1,26 +1,38 @@
 '''
-    >0 nb bombas rodeadas
-    0 no bomb
+    >0 nb bombs around
+    0 no bombs around
     -1 bomb
-    -2 abierto
-    -3 flagged
 
     check nbBombs <= height*width
 '''
 
-from multiprocessing.sharedctypes import Value
 import numpy as np
 import random
 
-width = 5
-height = 5
-nbBombs = 5
+width = 4
+height = 4
+nbBombs = 1
 class Tile: 
     def __init__(self):
         self.show = False
         self.isBomb = False
+        self.isTag = False
         self.value = 0
     
+    def setValue(self, value):
+        if value == -1:
+            self.isBomb = True
+        self.value = value
+
+    def toggleFlag(self):
+        self.isTag = not self.isTag
+    
+    def toggleShow(self):
+        self.show = not self.show
+
+    def IsBomb(self):
+        return self.isBomb
+
 class Matrix:
     def __init__(self, width, height, nbBombs):
         self.width = width
@@ -44,8 +56,7 @@ class Matrix:
                 x = random.randint(0, self.width-1)
                 y = random.randint(0, self.height-1)
 
-            self.mat[y][x].value = -1
-            self.mat[y][x].isBomb = True
+            self.mat[y][x].setValue(-1)
         self.calculate_nearby()
 
     def calculate_nearby(self):
@@ -71,41 +82,29 @@ class Matrix:
                     if(j > 0 and self.mat[i][j-1].isBomb):  
                         n+=1
 
-                    self.mat[i][j].value = n
-
-    def check_input(self, coord):
-        if self.check_bomb(x, y):
-            return 
-
-    # Returns true if case is a bomb, false if it's not a bomb or if it's marked, later raise exception for not a bomb or marked
-    def check_bomb(self, x, y):
-        # Check if it's equal to bomb char or number used later
-        return True if self.mat[x][y] == -1 else False
+                    self.mat[i][j].setValue(n)
 
     def print_nude(self):
         for row in self.mat:
             for tile in row:
-                if tile.value > 0:
+                if tile.isTag or tile.isBomb:
+                    if tile.isTag:
+                        print("F", end=' ')
+                    else:
+                        print("B", end=' ')
+                else:
                     print(f"{tile.value:.0f}", end=' ')
-                elif tile.value == 0:
-                    print(f"{tile.value:.0f}", end=' ')
-                elif tile.value == -1:
-                    print("B", end=' ')
-                elif tile.value == -2:
-                    print("X", end=' ')
-                elif tile.value == -3:
-                    print("F", end=' ')
             print()
     
     def print(self):
         for row in self.mat:
             for tile in row:
-                if tile.value >= -1:
-                    print("■", end=' ')
-                elif tile.value == -2:
-                    print(f"{tile.value:.0f}", end=' ')
-                elif tile.value == -3:
+                if tile.isTag:
                     print("Ø", end=' ')
+                elif tile.show:
+                    print(f"{tile.value:.0f}", end=' ')
+                else:
+                    print("■", end=' ')
             print()
 
 # Returns None if input coords are not valid, otherwise returns the coords as [x,y]
@@ -132,37 +131,33 @@ def get_coords(w, h):
 
     return [int(coord[0]), int(coord[1])]
 
-def handle_coords(mat, coords, bombsRem):
-    pos = mat.mat[coords[0]][coords[1]]
+def game(mat):
+    movesRem = (mat.width*mat.height) - mat.nbBombs
+    gameOver = False
+    # mat.print_nude()
 
-    if pos.value >= 0:
-        print("Valid")
-    # Double check w isBomb n -1?
-    elif pos.isBomb:
-        print("Boom")
-        bombsRem = 0
-    elif pos.value == -2:
-        print("Already checked")
-    elif pos.value == -3:
-        print("Flagged")
-
-def game(mat, nbBombs):
-    bombsRem = nbBombs
-    mat.print_nude()
-
-    while(bombsRem > 0):
+    while(not gameOver and movesRem > 0):
         mat.print()
 
         coord = None
         while coord is None:
             coord = get_coords(mat.height, mat.width)
 
-        handle_coords(mat, coord, bombsRem)
+        # Check, bomb, flag, error
+        tile = mat.mat[coord[0]][coord[1]]
+        if tile.value >= 0 and not tile.isTag and not tile.show:
+            tile.toggleShow()
+            movesRem = movesRem - 1
+        elif tile.isBomb:
+            tile.toggleShow()
+            gameOver = True
 
-        bombsRem = bombsRem-1
-    
-    print("Game over")
+    mat.print()
+    if not gameOver:
+        print("WIN")
+    else:
+        print("LOSE")
 
 if __name__ == "__main__":
     mat = Matrix(height, width, nbBombs)
-    game(mat, nbBombs)
+    game(mat)
