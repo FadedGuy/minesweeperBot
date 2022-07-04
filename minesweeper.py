@@ -5,11 +5,12 @@
 
     check nbBombs <= height*width
 '''
-from tile import Tile
 from matrix import Matrix
+from graphics import App
 
+# Globals used for init
 width = 4
-height = 4
+height = 5
 nbBombs = 0
 
 # Returns None if input coords are not valid, otherwise returns the coords as [x,y]
@@ -28,7 +29,7 @@ def get_coords(w, h):
                 print(f"{pos} is not an int!")
                 return None
     
-    coord[0],coord[1] = int(coord[0]), int(coord[1])
+    coord[1], coord[0] = int(coord[0]), int(coord[1])
 
     if coord[0] < 0 or coord[0] >= w or coord[1] < 0 or coord[1] >= h:
         print("Invalid coordinates")
@@ -64,5 +65,8 @@ def game(mat):
         print("LOSE")
 
 if __name__ == "__main__":
-    mat = Matrix(height, width, nbBombs)
-    game(mat)
+    mat = Matrix(width, height, nbBombs)
+    # game(mat)
+
+    app = App(mat)
+    app.mainloop()
