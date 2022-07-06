@@ -9,7 +9,7 @@ from matrix import Matrix
 from graphics import App
 
 # Globals used for init
-width = 4
+width = 5
 height = 5
 nbBombs = 0
 

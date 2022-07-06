@@ -3,6 +3,7 @@ class Tile:
         self.show = False
         self.isBomb = False
         self.isTag = False
+        self.size = 50
         self.value = 0
     
     def setValue(self, value):
@@ -18,3 +19,6 @@ class Tile:
 
     def IsBomb(self):
         return self.isBomb
+
+    def setSize(self, size):
+        self.size = size

@@ -1,21 +1,38 @@
+'''
+    Assumes mat is not empty
+    resizable 
+'''
+
 import tkinter as tk
 from tkinter import ttk
 
+from numpy import column_stack
 class App(tk.Tk):
     def __init__(self, mat):
         super().__init__()
 
-        self.geometry("240x100")
+        tileSize = mat.mat[0][0].size
+        wScreen = tileSize*mat.width
         self.title('Minesweeper')
-        self.resizable(0, 0)
+        self.resizable(False, False)
 
-        content = ttk.Frame(self)
-        frame = ttk.Frame(content, borderwidth=5, relief="ridge", width=200, height=100)
-        namelbl = ttk.Label(content, text="Name")
+        content = ttk.Frame(self, padding=(5,5))   
+        topFrame = ttk.Frame(content, borderwidth=2, relief="groove", width=wScreen, height=tileSize*2)
+        gameFrame = ttk.Frame(content, borderwidth=2, relief="sunken", width=wScreen, height=tileSize*mat.height)
+        tileFrame = []
+        
+        for i in range(mat.height):
+            r = []
+            for j in range(mat.width):
+                r.append(ttk.Frame(gameFrame, borderwidth=1, relief="solid", width=tileSize, height=tileSize))
+            tileFrame.append(r)
 
         content.grid(column=0, row=0)
-        frame.grid(column=0, row=0, columnspan=3, rowspan=2)
-        namelbl.grid(column=3, row=0, columnspan=2)
+        topFrame.grid(column=0, row=0, columnspan=1, rowspan=1)
+        gameFrame.grid(column=0, row=1, columnspan=1, rowspan=1)
+        for i in range(mat.height):
+            for j in range(mat.width):
+                tileFrame[i][j].grid(column=i, row=j, columnspan=1, rowspan=1)
 
 # app = App()
 # app.mainloop()
