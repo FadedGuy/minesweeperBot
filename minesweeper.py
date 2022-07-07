@@ -11,7 +11,7 @@ from graphics import App
 # Globals used for init
 width = 5
 height = 5
-nbBombs = 0
+nbBombs = 3
 
 # Returns None if input coords are not valid, otherwise returns the coords as [x,y]
 def get_coords(w, h):
@@ -52,10 +52,10 @@ def game(mat):
         # Check, bomb, flag, error
         tile = mat.mat[coord[0]][coord[1]]
         if tile.value >= 0 and not tile.isTag and not tile.show:
-            tile.toggleShow()
+            tile.setShow()
             movesRem = movesRem - 1
         elif tile.isBomb:
-            tile.toggleShow()
+            tile.setShow()
             gameOver = True
 
     mat.print()

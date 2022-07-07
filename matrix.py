@@ -3,6 +3,7 @@ from tile import Tile
 
 class Matrix:
     def __init__(self, width, height, nbBombs):
+        self.tilesUI = []
         self.width = width
         self.height = height
         self.nbBombs = nbBombs
@@ -14,8 +15,8 @@ class Matrix:
                 r.append(Tile())
             self.mat.append(r)
 
-        self.setup_matrix()
-    
+        self.setup_matrix()        
+
     def setup_matrix(self):
         for i in range(self.nbBombs):
             x = random.randint(0, self.width-1)

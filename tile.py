@@ -14,11 +14,19 @@ class Tile:
     def toggleFlag(self):
         self.isTag = not self.isTag
     
-    def toggleShow(self):
-        self.show = not self.show
+    def setShow(self):
+        self.show = True
 
     def IsBomb(self):
         return self.isBomb
 
     def setSize(self, size):
         self.size = size
+
+    def getTextValue(self):
+        if self.isTag:
+            return "Ø"
+        elif self.isBomb:
+            return "B"
+        else:
+            return f"{self.value}"
