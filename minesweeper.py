@@ -9,9 +9,9 @@ from matrix import Matrix
 from graphics import App
 
 # Globals used for init
-width = 5
-height = 5
-nbBombs = 3
+width = 10
+height = 10
+nbBombs = 10
 
 # Returns None if input coords are not valid, otherwise returns the coords as [x,y]
 def get_coords(w, h):

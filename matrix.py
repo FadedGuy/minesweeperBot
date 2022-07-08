@@ -1,3 +1,8 @@
+'''
+    expand when click on 0
+    change color or bg to differenciate
+'''
+
 import random 
 from tile import Tile
 
